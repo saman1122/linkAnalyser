@@ -1,6 +1,6 @@
 package fr.insta.saman;
 
-public class NotreClasse {
+class Node {
     public String domain;
     public String url;
     public String titre;

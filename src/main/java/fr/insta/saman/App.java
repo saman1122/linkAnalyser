@@ -2,7 +2,6 @@ package fr.insta.saman;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -10,43 +9,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-/**
- * Hello world!
- *
- */
-public class App
+class App
 {
 
-    public static void main( String[] args ) throws URISyntaxException, MalformedURLException {
-        List<Classe2> listClasse2 = new ArrayList<Classe2>();
+    public static void main( String[] args ) throws URISyntaxException {
+        List<Domain> listDomain = new ArrayList<>();
         String urlPrincipal = "https://www-apr.lip6.fr/~buixuan/mrinsta2018";
 
-        List<NotreClasse> notreClasses = getLinksFromURL(urlPrincipal);
-        String domain = getDomainName(urlPrincipal);
-        Classe2 classe2 = new Classe2(domain,urlPrincipal,notreClasses);
-        listClasse2.add(classe2);
+        List<Node> listNodes = getLinksFromURL(urlPrincipal);
+        listDomain.add(new Domain(getDomainName(urlPrincipal), urlPrincipal, listNodes));
 
-        for (NotreClasse nc : notreClasses) {
-            List<NotreClasse> sousClasse = getLinksFromURL(nc.url);
-
-            Classe2 classeSS = new Classe2(nc.domain,nc.url,sousClasse);
-            listClasse2.add(classeSS);
+        for (Node nc : listNodes) {
+            listDomain.add(new Domain(nc.domain, nc.url, getLinksFromURL(nc.url)));
         }
 
-        listClasse2.forEach(x -> x.node.forEach(y ->  {
+        listDomain.forEach(x -> x.node.forEach(y ->  {
             System.out.println("Domain: " + y.domain + " URL: " + y.url);
 
         }) );
 
     }
 
-    private static List<NotreClasse> getLinksFromURL(String url) throws URISyntaxException, MalformedURLException {
-        List<NotreClasse> retour = new ArrayList<NotreClasse>();
+    private static List<Node> getLinksFromURL(String url) throws URISyntaxException {
+        List<Node> retour = new ArrayList<>();
         StringBuilder html = new StringBuilder();
-
-        //Calculer domain
-        URI uri = new URI(url);
-        String domain=uri.getHost();
 
             try {
                 URL oracle = new URL(url);
@@ -65,14 +51,13 @@ public class App
             Vector<HTMLLinkExtractor.HtmlLink> links = htmlLinkExtractor.grabHTMLLinks(html.toString());
 
 
-            for (int i = 0; i<links.size();i++) {
-                HTMLLinkExtractor.HtmlLink htmlLink = links.get(i);
-                NotreClasse nc = new NotreClasse();
-                nc.url = htmlLink.getLink();
-                nc.domain=getDomainName(nc.url);
-                if (nc.domain.isEmpty()) nc.domain = getDomainName(url);
-                if (!nc.url.startsWith("#")) retour.add(nc);
-            }
+        for (HTMLLinkExtractor.HtmlLink htmlLink : links) {
+            Node nc = new Node();
+            nc.url = htmlLink.getLink();
+            nc.domain = getDomainName(nc.url);
+            if (nc.domain.isEmpty()) nc.domain = getDomainName(url);
+            if (!nc.url.startsWith("#")) retour.add(nc);
+        }
 
         return retour;
     }
@@ -93,7 +78,7 @@ public class App
     }
 
     /* Returns true if url is valid */
-    public static boolean isValid(String url)
+    private static boolean isValid(String url)
     {
         /* Try creating a valid URL */
         try {

@@ -4,15 +4,14 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HTMLLinkExtractor {
+class HTMLLinkExtractor {
 
-    private Pattern patternTagA, patternLinkA;
-    private Matcher matcherTagA, matcherLinkA;
+    private final Pattern patternTagA, patternLinkA;
 
     private static final String HTML_A_TAG_PATTERN = "(?i)<a([^>]+)>(.+?)</a>";
     private static final String HTML_A_HREF_TAG_PATTERN =
             "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-    public HTMLLinkExtractor() {
+    HTMLLinkExtractor() {
         patternTagA = Pattern.compile(HTML_A_TAG_PATTERN);
         patternLinkA = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
     }
@@ -26,16 +25,16 @@ public class HTMLLinkExtractor {
      */
     public Vector<HtmlLink> grabHTMLLinks(final String html) {
 
-        Vector<HtmlLink> result = new Vector<HtmlLink>();
+        Vector<HtmlLink> result = new Vector<>();
 
-        matcherTagA = patternTagA.matcher(html);
+        Matcher matcherTagA = patternTagA.matcher(html);
 
         while (matcherTagA.find()) {
 
             String href = matcherTagA.group(1); // href
             String linkText = matcherTagA.group(2); // link text
 
-            matcherLinkA = patternLinkA.matcher(href);
+            Matcher matcherLinkA = patternLinkA.matcher(href);
 
             while (matcherLinkA.find()) {
 
@@ -59,19 +58,19 @@ public class HTMLLinkExtractor {
         String link;
         String linkText;
 
-        HtmlLink(){};
+        HtmlLink(){}
 
         @Override
         public String toString() {
-            return new StringBuffer("Link : ").append(this.link)
-                    .append(" Link Text : ").append(this.linkText).toString();
+            return "Link : " + this.link +
+                    " Link Text : " + this.linkText;
         }
 
         public String getLink() {
             return link;
         }
 
-        public void setLink(String link) {
+        void setLink(String link) {
             this.link = replaceInvalidChar(link);
         }
 
@@ -79,7 +78,7 @@ public class HTMLLinkExtractor {
             return linkText;
         }
 
-        public void setLinkText(String linkText) {
+        void setLinkText(String linkText) {
             this.linkText = linkText;
         }
 
