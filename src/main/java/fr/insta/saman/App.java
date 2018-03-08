@@ -14,7 +14,7 @@ class App
 
     public static void main( String[] args ) throws URISyntaxException {
         List<Domain> listDomain = new ArrayList<>();
-        String urlPrincipal = "https://www-apr.lip6.fr/~buixuan/mrinsta2018";
+        String urlPrincipal = args[0];
 
         List<Node> listNodes = getLinksFromURL(urlPrincipal);
         listDomain.add(new Domain(getDomainName(urlPrincipal), urlPrincipal, listNodes));
