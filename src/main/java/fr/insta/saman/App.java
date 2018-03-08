@@ -25,29 +25,64 @@ class App
 
         listDomain.forEach(x -> x.node.forEach(y ->  {
             System.out.println("Domain: " + y.domain + " URL: " + y.url);
-
         }) );
 
-        System.out.println(listUniqueDomain.toString());
+        System.out.println("");
+        System.out.println("List domain");
+        System.out.println("----------------" + '\n');
 
-        Double [][] listTest = getMatriceUrl(listDomain);
+        listUniqueDomain.forEach((x,y)-> System.out.println("id : " + y + " domain: " + x));
 
-        for (int i = 0; i<listTest.length;i++) {
+        double [][] urlMatrix = getMatriceUrl(listDomain);
+
+        System.out.println('\n');
+        System.out.println("URL matrix");
+        System.out.println("----------------");
+
+        for (int i = 0; i<urlMatrix.length;i++) {
             System.out.println();
-            for (int j = 0; j < listTest[i].length;j++) {
-                System.out.print( listTest[i][j] + "|");
+            for (int j = 0; j < urlMatrix[i].length;j++) {
+                System.out.print( urlMatrix[j][i] + "|");
             }
         }
 
         System.out.println('\n');
+        System.out.println("Normalized matrix");
+        System.out.println("----------------");
 
-        Double [][] listTest2 = getMatriceNormalised(listTest);
+        double [][] normalisedMatrix = getMatriceNormalised(urlMatrix);
 
-        for (int i = 0; i<listTest2.length;i++) {
+        for (int i = 0; i<normalisedMatrix.length;i++) {
             System.out.println();
-            for (int j = 0; j < listTest2[i].length;j++) {
-                System.out.print( listTest2[i][j] + "|");
+            for (int j = 0; j < normalisedMatrix[i].length;j++) {
+                System.out.print( normalisedMatrix[j][i] + "|");
             }
+        }
+
+        double[][] v = new double [1][listUniqueDomain.size()];
+        Random random = new Random();
+
+        for (int i = 0; i < v.length; i++) {
+            double total = 0d;
+            for (int j = 0; j < v[i].length; j++) {
+                v[i][j] = random.nextDouble()*1000;
+                total += v[i][j];
+            }
+
+            for (int j = 0; j < v[i].length; j++) {
+                v[i][j] /= total;
+            }
+        }
+
+        double[][] ranking = Matrices.multiplicar(v, normalisedMatrix);
+
+        System.out.println('\n');
+        System.out.println("Ranking");
+        System.out.println("----------------");
+        System.out.println("Id | score");
+
+        for (int i = 0; i<ranking[0].length;i++) {
+            System.out.println(i+1 + " | " + ranking[0][i]);
         }
 
     }
@@ -116,37 +151,33 @@ class App
         }
     }
 
-    private static Double[][] getMatriceUrl( List<Domain> listDomain) {
-        Double retour[][] = new Double[listUniqueDomain.size()][listUniqueDomain.size()];
-
-        for (int i = 0; i<retour.length;i++) {
-            for (int j = 0; j<retour[i].length; j++) retour[i][j] = 0d;
-        }
+    private static double[][] getMatriceUrl( List<Domain> listDomain) {
+        double retour[][] = new double[listUniqueDomain.size()][listUniqueDomain.size()];
 
         listDomain.forEach(x -> x.node.forEach( y -> {
             int domainColonne = listUniqueDomain.get(x.domain);
             int domainLigne = listUniqueDomain.get(y.domain);
 
             if (domainColonne != domainLigne) {
-                retour[domainLigne-1][domainColonne-1] += 1d;
+                retour[domainColonne-1][domainLigne-1] += 1d;
             }
         }));
 
         return retour;
     }
 
-    private static Double[][] getMatriceNormalised(Double[][] matriceUrl) {
-        Double retour[][] = matriceUrl.clone();
+    private static double[][] getMatriceNormalised(double[][] matriceUrl) {
+        double retour[][] = matriceUrl.clone();
 
         for (int i=0; i<matriceUrl.length;i++) {
             double total = 0;
             for (int j = 0; j < matriceUrl[i].length; j++) {
-                total += matriceUrl[j][i];
+                total += matriceUrl[i][j];
             }
 
             if (total > 0d) {
                 for (int j = 0; j < matriceUrl[i].length; j++) {
-                    matriceUrl[j][i] /= total;
+                    matriceUrl[i][j] /= total;
                 }
             }
         }
