@@ -1,18 +1,18 @@
 package fr.insta.saman;
 
 public class Matrices {
-    //calcul de dterminant
+    //calcul de determinant
     public  double determinant(double matrice[][])
     {
         double determinant = 0;
         double matricenouvelle[][] = new double[matrice.length - 1][matrice.length - 1];
 
         for(int boucle = 1; boucle <= matrice.length - 1; boucle++){
-            //calcul le cofacteur pour la premire coordonne de toute les lignes
+            //calcul le cofacteur pour la premiere coordonnee de toute les lignes
             matricenouvelle = cofacteur(matrice,boucle,1);
 
-            //calcul le dterminant de la nouvelle matrice cr, lorsque que la matrice atteint une dimension de 3X3
-            //La mthode de sarrus est utilis autrement on continue avec la mthode des cofacteurs.
+            //calcul le determinant de la nouvelle matrice cree, lorsque que la matrice atteint une dimension de 3X3
+            //La methode de sarrus est utilise autrement on continue avec la methode des cofacteurs.
             if (matricenouvelle.length - 1 != 3)
                 determinant += (Math.pow(-1, boucle+1) * matrice[boucle][1]) * determinant(matricenouvelle);
             else
@@ -21,7 +21,7 @@ public class Matrices {
         return determinant;
     }
 
-    //mthodes de sarrus, consiste a calculculer le dterminant d'une matrice 3X3
+    //methodes de sarrus, consiste a calculculer le determinant d'une matrice 3X3
     private  double sarrus(double matrice[][])
     {
         double produit = 1;
@@ -67,7 +67,7 @@ public class Matrices {
         return matriceC;
     }
 
-    //Somme de deux matrices, soustrait chaque coordonnes avec sa coordonne correspondante
+    //Somme de deux matrices, soustrait chaque coordonnees avec sa coordonnee correspondante
     public  double[][] addition(double matriceA[][], double matriceB[][])
     {
         double matriceC[][] = new double [matriceA.length][matriceA.length];
@@ -79,7 +79,7 @@ public class Matrices {
         return matriceC;
     }
 
-    //Diffrence de deux matrices
+    //Difference de deux matrices
     public  double[][] soustraction(double matriceA[][], double matriceB[][])
     {
         double matriceC[][] = new double [matriceA.length][matriceA.length];
@@ -99,7 +99,7 @@ public class Matrices {
 
         determinant = determinant(matrice);
 
-        //chaque coordonne de la matrice inverse est constitu du determinant du cofacteur de chaque coordonne de la matrice de dpart
+        //chaque coordonnee de la matrice inverse est constitue du determinant du cofacteur de chaque coordonnee de la matrice de depart
         for (int boucle = 1; boucle <= matrice.length - 1; boucle++)
             for (int boucle1 = 1; boucle1 <= matrice.length - 1; boucle1++)
                 inverse[boucle][boucle1] = determinant (cofacteur(matrice,boucle,boucle1));
@@ -107,7 +107,7 @@ public class Matrices {
         //on transpose la matrice.
         inverse = transpose(inverse);
 
-        //et on divise chaque coordonne par le determinant de la matrice de dpart
+        //et on divise chaque coordonnee par le determinant de la matrice de depart
         for (int boucle = 1; boucle <= matrice.length - 1; boucle++)
             for (int boucle1 = 1; boucle1 <= matrice.length - 1; boucle1++)
                 inverse[boucle][boucle1] = inverse[boucle][boucle1]/determinant;
@@ -115,7 +115,7 @@ public class Matrices {
         return inverse;
     }
 
-    //un cofacteur est un matrice a laquelle on a retir une ligne et une colonne. EX: le cofacteur d'une matrice en se basant sur sa coordonne
+    //un cofacteur est un matrice a laquelle on a retire une ligne et une colonne. EX: le cofacteur d'une matrice en se basant sur sa coordonnee
     //3,3 est cette meme matrice sans la ligne 3 et la colonne 3.
     private double[][] cofacteur(double matrice[][], int ligne, int colonne)
     {
